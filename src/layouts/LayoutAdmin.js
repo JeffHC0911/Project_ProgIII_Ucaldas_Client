@@ -1,16 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { Layout } from "antd";
-export default function LayoutAdmin(props){
-    const {children} = props
+import './layoutAdmin.scss'
+import MenuTop from '../components/AdminComponents/Menu/TopMenu'
+import MenuSider from "../components/AdminComponents/MenuSider"
+
+export default function LayoutAdmin(){
+    const [menuCollapsed, setMenuCollapsed] = useState(false);
+    // const {children} = props
     /*Especificar los componentes que se quieren dar en este layout */
     const {Header, Content, Footer} = Layout
     return(
         <Layout>
-            <h2>Menu Sider</h2>
-            <Layout>
-                <Header>Header</Header>
-                <Content>{children}</Content>
-                <Footer>React Project 2022</Footer>
+            <MenuSider menuCollapsed={menuCollapsed} />
+            <Layout className="layout-admin">
+                <Header className="layout-admin__header">
+                    <MenuTop
+                        menuCollapsed={menuCollapsed}
+                        setMenuCollapsed={setMenuCollapsed}
+                    />
+                </Header>
+                <Content className="layout-admin__content">
+                    <h1>Rutas</h1>
+                </Content>
+                <Footer className="layout-admin__footer">React Project 2022</Footer>
             </Layout>
         </Layout>
     );
