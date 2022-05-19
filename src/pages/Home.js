@@ -1,8 +1,11 @@
 import React from "react";
-export default function Home(){
-    return(
-        <div>
-            <h1>Estamos en Home Page</h1>
-        </div>
-    )
+
+export default function Home() {
+  return (
+    <div>
+      <h1>Cardssss</h1>
+      <h6>Content</h6>
+    </div>
+
+  );
 }
