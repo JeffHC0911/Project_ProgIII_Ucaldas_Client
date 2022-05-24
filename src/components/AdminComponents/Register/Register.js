@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Checkbox } from "antd";
+import { Form, Input, Button, Checkbox, notification } from "antd";
+import {signUpApi} from "../../../api/user"
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import {
   emailValidation,
@@ -43,7 +44,7 @@ export default function Register() {
   };
 
   const inputValidation = (e) => {
-    console.log("Validando");
+    console.log(formValid);
     const { type, name } = e.target;
 
     if (type === "text") {
@@ -63,7 +64,7 @@ export default function Register() {
 
   const register = async (e) => {
     e.preventDefault();
-    console.log(formValid);
+    console.log("Estamos en register");
     const name_user = inputs.name_user;
     const lastname = inputs.lastname;
     const emailVal = inputs.email;
@@ -71,10 +72,29 @@ export default function Register() {
     const repeatPasswordVal = inputs.repeatPassword;
     const privacyPolicyVal = inputs.privacyPolicy;
     if(!name_user || !lastname || !emailVal || !passwordVal || !repeatPasswordVal || !privacyPolicyVal ){
+      notification["error"]({
+        message: "Todos los campos son obligatorios"
+      })
       console.log("Campos vacios")
     }else{
       if(passwordVal !== repeatPasswordVal){
-        console.log("Las contraseñas deben ser iguales")
+        notification.error({
+          message:  "Las contraseñas deben ser iguales"
+        })
+        console.log("Las contraseñas NO son iguales")
+      }else{
+        const result = await signUpApi(inputs)
+        console.log(result);
+        if(!result.user_creado){
+          notification.error({
+            message: result.message
+          })
+        }else{
+          notification.success({
+            message: result.message
+          })
+        }
+        resetForm()
       }
     }
   };
@@ -172,7 +192,7 @@ export default function Register() {
         </Checkbox>
       </Form.Item>
       <Form.Item>
-        <Button htmlType="submit" className="register-form__button">
+        <Button onClick={register} htmlType="submit" className="register-form__button">
           Crear cuenta
         </Button>
       </Form.Item>
