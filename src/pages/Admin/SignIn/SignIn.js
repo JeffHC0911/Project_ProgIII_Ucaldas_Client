@@ -3,11 +3,19 @@ import { Layout, Tabs } from "antd";
 import Login from "../../../components/AdminComponents/Login";
 import Register from "../../../components/AdminComponents/Register";
 import Logo from "../../../assets/img/png/J-removebg-preview.png";
+import {getAccesToken} from "../../../api/auth"
 import "./SignIn.scss";
+import { Routes, Route } from "react-router-dom";
 
 export default function SignIn() {
   const { Content } = Layout;
   const { TabPane } = Tabs;
+
+  if(getAccesToken()){
+    <Routes>
+      <Route path="/admin" />
+    </Routes>
+  }
   return (
     <Layout className="sign-in">
       <Content className="sign-in__content">

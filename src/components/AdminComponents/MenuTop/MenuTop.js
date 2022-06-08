@@ -7,9 +7,15 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import "./MenuTop.scss";
+import { logout } from "../../../api/auth";
 
 export default function MenuTop(props) {
   const { menuCollapsed, setMenuCollapsed } = props;
+  const userLogout = () =>{
+    console.log("Cerrando sesión")
+    logout()
+    window.location.reload()
+  }
   return (
     <div className="menu-top">
       <div className="menu-top__left">
@@ -19,7 +25,7 @@ export default function MenuTop(props) {
         </Button>
       </div>
       <div className="menu-top__right">
-        <Button type="link" onClick={() => console.log("Log Off!")}>
+        <Button type="link" onClick={userLogout}>
           <UserOutlined />
         </Button>
       </div>

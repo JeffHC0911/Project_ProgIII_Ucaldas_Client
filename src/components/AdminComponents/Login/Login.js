@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"
 import { Form, Button, Input, notification } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { signIn } from "../../../api/user"
 import "./Login.scss";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../../api/constants";
 
 export default function Login() {
 
@@ -12,8 +12,6 @@ export default function Login() {
     email: "",
     password: ""
   });
-
-  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,16 +24,22 @@ export default function Login() {
       })
     }else{
       const result = await signIn(inputs)
-      if(!result.user_iniciado){
+      if(result.message){
         notification.error({
           message: result.message
         })
       }else{
+        const {accessToken, refreshToken} = result
+        localStorage.setItem(ACCESS_TOKEN, accessToken)
+        localStorage.setItem(REFRESH_TOKEN, refreshToken)
+
         notification.success({
           message: result.message
         })
+
+        window.location.href="/admin"
       }
-      navigate("/admin")
+      console.log(result)
     }
   }
 

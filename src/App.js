@@ -1,11 +1,13 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import miroutes from "./config/routes";
+import AuthProvider from "./providers/authProvider";
 import "./App.scss";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <AuthProvider>
+          <BrowserRouter>
       <Routes>
         {miroutes.map((route, index) => (
           <Route
@@ -20,5 +22,6 @@ export default function App() {
         ))}
       </Routes>
     </BrowserRouter>
+    </AuthProvider>
   );
 }

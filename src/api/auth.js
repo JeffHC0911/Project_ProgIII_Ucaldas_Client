@@ -1,5 +1,6 @@
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "./constants"
 import jwtDecode from "jwt-decode"
+import { basePath, apiVersion } from "./config"
 
 export function getAccesToken(){
     const accessToken = localStorage.getItem(ACCESS_TOKEN)
@@ -19,4 +20,40 @@ const expireToken = (token) =>{
     const {exp} = metaToken
     const now = (Date.now() * seconds) / 1000
     return now > exp
+}
+
+//Hacer el logou con localStorage.removeItem
+export function logout(){
+    localStorage.removeItem(REFRESH_TOKEN)
+    localStorage.removeItem(ACCESS_TOKEN)
+}
+
+export function refreshAccessToken(refreshToken){
+    const url = `${basePath}/${apiVersion}/refresh-token`
+    const bodyObject = {
+        refreshToken: refreshToken
+    }
+    const params = {
+        method: "POST",
+        body: JSON.stringify(bodyObject),
+        headers: {
+            "Content-Type": "application/json",
+        }
+    };
+    fetch(url, params)
+        .then((response) =>{
+            if (response.status !== 200){
+                return null
+            }
+            return response.json()
+        })
+        .then((result) =>{
+            if (!result){
+                logout()
+            }else{
+                const {accessToken, refreshToken} = result
+                localStorage.setItem(ACCESS_TOKEN, accessToken)
+                localStorage.setItem(REFRESH_TOKEN, refreshToken)
+            }
+        })
 }
