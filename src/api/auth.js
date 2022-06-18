@@ -2,33 +2,35 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "./constants"
 import jwtDecode from "jwt-decode"
 import { basePath, apiVersion } from "./config"
 
-export function getAccesToken(){
+export function getAccesToken() {
     const accessToken = localStorage.getItem(ACCESS_TOKEN)
-    if(!accessToken || accessToken === "null") return null
-    return expireToken(accessToken) ? null:accessToken
+    if (!accessToken || accessToken === "null") return null
+    return expireToken(accessToken) ? null : accessToken
 }
 
-export function getRefreshToken(){
+export function getRefreshToken() {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN)
-    if(!refreshToken || refreshToken === "null") return null
-    return expireToken(refreshToken) ? null:refreshToken
+    if (!refreshToken || refreshToken === "null") return null
+    return expireToken(refreshToken) ? null : refreshToken
 }
 
-const expireToken = (token) =>{
-    const seconds = 60
-    const metaToken = jwtDecode(token)
-    const {exp} = metaToken
-    const now = (Date.now() * seconds) / 1000
-    return now > exp
+const expireToken = (token) => {
+    const seconds = 60;
+    const metaToken = jwtDecode(token);
+    console.log(metaToken);
+    const { fecha_expiracion } = metaToken;
+    const now = (Date.now() + seconds) / 1000;
+    /* Si la fecha actual es mayor que la fecha de expiración devuelve True, de lo contrario False */
+    return now > fecha_expiracion;
 }
 
 //Hacer el logou con localStorage.removeItem
-export function logout(){
+export function logout() {
     localStorage.removeItem(REFRESH_TOKEN)
     localStorage.removeItem(ACCESS_TOKEN)
 }
 
-export function refreshAccessToken(refreshToken){
+export function refreshAccessToken(refreshToken) {
     const url = `${basePath}/${apiVersion}/refresh-token`
     const bodyObject = {
         refreshToken: refreshToken
@@ -41,17 +43,17 @@ export function refreshAccessToken(refreshToken){
         }
     };
     fetch(url, params)
-        .then((response) =>{
-            if (response.status !== 200){
+        .then((response) => {
+            if (response.status !== 200) {
                 return null
             }
             return response.json()
         })
-        .then((result) =>{
-            if (!result){
+        .then((result) => {
+            if (!result) {
                 logout()
-            }else{
-                const {accessToken, refreshToken} = result
+            } else {
+                const { accessToken, refreshToken } = result
                 localStorage.setItem(ACCESS_TOKEN, accessToken)
                 localStorage.setItem(REFRESH_TOKEN, refreshToken)
             }

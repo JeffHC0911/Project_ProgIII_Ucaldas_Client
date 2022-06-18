@@ -7,7 +7,7 @@ import "./App.scss";
 export default function App() {
   return (
     <AuthProvider>
-          <BrowserRouter>
+      <BrowserRouter>
       <Routes>
         {miroutes.map((route, index) => (
           <Route

@@ -19,6 +19,7 @@ export default function LayoutAdmin(props) {
   const accessToken = getAccesToken()
   const refreshAccessToken = getRefreshToken()
 
+
   /*Si no hay un usuario y ya terminí de cargar la página, no es usuario logueado */
   if (!user && !isLoading) {
     return (
