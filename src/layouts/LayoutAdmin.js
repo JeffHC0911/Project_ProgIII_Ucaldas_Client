@@ -48,7 +48,7 @@ export default function LayoutAdmin(props) {
           </Header>
           <Content className="layout-admin__content">{children}</Content>
           <Footer className="layout-admin__footer">
-            <Button type="link" onClick={() => console.log("Github")}>
+            <Button type="link" href="https://github.com/JeffHC0911" onClick={() => console.log("Github")}>
               <GithubOutlined style={{ fontSize: "17px" }} /> JeffHC0911
             </Button>
           </Footer>

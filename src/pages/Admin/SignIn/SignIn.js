@@ -6,15 +6,24 @@ import Logo from "../../../assets/img/png/J-removebg-preview.png";
 import {getAccesToken} from "../../../api/auth"
 import "./SignIn.scss";
 import { Routes, Route } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth"
 
 export default function SignIn() {
   const { Content } = Layout;
   const { TabPane } = Tabs;
+  const {user} = useAuth()
 
   if(getAccesToken()){
+    if(user.role === "admin"){
     <Routes>
       <Route path="/admin" />
     </Routes>
+    }
+    if(user.role === "editor"){
+      <Routes>
+      <Route path="/editor" />
+    </Routes>
+    }
   }
   return (
     <Layout className="sign-in">

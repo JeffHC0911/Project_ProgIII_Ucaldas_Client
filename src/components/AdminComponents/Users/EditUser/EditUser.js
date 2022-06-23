@@ -13,7 +13,7 @@ import {
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { useDropzone } from "react-dropzone";
 import NoAvatar from "../../../../assets/image/png/user.jpg";
-import { uploadAvatar, getAvatar } from "../../../../api/user";
+import { uploadAvatar, getAvatar, updateUser } from "../../../../api/user";
 import { getAccesToken } from "../../../../api/auth";
 
 import "./EditUser.scss";
@@ -50,7 +50,7 @@ export default function EditUserForm(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [avatar]);
 
-    const updateUser = () => {
+    const userUpdate = () => {
         const token = getAccesToken();
         let userUpdate = userData;
 
@@ -86,7 +86,7 @@ export default function EditUserForm(props) {
                 });
             });
         } else {
-            updateUser(token, userUpdate, user._id).then(result => {
+            updateUser(token, userUpdate, user._id).then((result) => {
                 notification["success"]({
                     message: result.message
                 });
@@ -102,7 +102,7 @@ export default function EditUserForm(props) {
             <EditForm
                 userData={userData}
                 setUserData={setUserData}
-                updateUser={updateUser}
+                userUpdate={userUpdate}
             />
         </div>
     );
@@ -151,11 +151,11 @@ function UploadAvatar(props) {
 }
 
 function EditForm(props) {
-    const { userData, setUserData, updateUser } = props;
+    const { userData, setUserData, userUpdate } = props;
     const { Option } = Select;
 
     return (
-        <Form className="form-edit" onFinish={updateUser}>
+        <Form className="form-edit" onFinish={userUpdate}>
             <Row gutter={24}>
                 <Col span={12}>
                     <Form.Item>

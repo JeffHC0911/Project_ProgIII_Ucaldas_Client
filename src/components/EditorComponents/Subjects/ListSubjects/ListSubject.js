@@ -3,7 +3,6 @@ import {
     Switch,
     List,
     Button,
-    Avatar,
     Modal as ModalAntd,
     notification,
 } from "antd";
@@ -13,41 +12,40 @@ import {
     UserSwitchOutlined,
     UserAddOutlined,
 } from "@ant-design/icons";
-import NoAvatar from "../../../../assets/image/png/user.jpg";
-import { getAvatar, activateUser, deleteUser } from "../../../../api/user";
+import {activateSubject, deleteSubject } from "../../../../api/subject";
 import { getAccesToken } from "../../../../api/auth";
-import EditUserForm from "../EditUser";
-import AddUserForm from "../AddUser";
+import EditSubjectForm from "../EditSubject";
+import AddSubjectForm from "../AddSubject";
 import Modal from "../../../Modal";
 
 const { confirm } = ModalAntd;
 
-export default function ListUsers(props) {
-    /* page user */
-    const { usersActive, usersInactive, setReloadUsers } = props;
-    const [viewUsersActives, setViewUsersActives] = useState(true);
+export default function ListSubjects(props) {
+    /* page subject */
+    const { subjectsActive, subjectsInactive, setReloadSubjects } = props;
+    const [viewSubjectsActive, setViewSubjectsActive] = useState(true);
     const [isVisibleModal, setIsVisibleModal] = useState(false);
     const [modalTitle, setModalTitle] = useState("");
     const [modalContent, setModalContent] = useState(null);
 
-    const addUserModal = () => {
+    const addSubjectModal = () => {
         setIsVisibleModal(true);
-        setModalTitle("Creando nuevo usuario");
+        setModalTitle("Creando nueva asignatura");
         setModalContent(
-            <AddUserForm
+            <AddSubjectForm
                 setIsVisibleModal={setIsVisibleModal}
-                setReloadUsers={setReloadUsers}
+                setReloadSubjects={setReloadSubjects}
             />
         );
     };
 
     return (
-        <div className="list-users">
-            <div className="list-users__header">
-                <div className="list-users__header-switch">
+        <div className="list-subjects">
+            <div className="list-subjects__header">
+                <div className="list-subjects__header-switch">
                     <List.Item
                         actions={[
-                            <Button type="primary" onClick={addUserModal}>
+                            <Button type="primary" onClick={addSubjectModal}>
                                 <UserAddOutlined />
                             </Button>,
                         ]}
@@ -55,13 +53,13 @@ export default function ListUsers(props) {
                         <List.Item.Meta
                             title={
                                 <span>
-                                    {viewUsersActives ? "Usuarios Activos" : "Usuarios Inactivos"}
+                                    {viewSubjectsActive ? "Asignaturas Activas" : "Asignaturas Inactivas"}
                                 </span>
                             }
                             avatar={
                                 <Switch
                                     defaultChecked
-                                    onChange={() => setViewUsersActives(!viewUsersActives)}
+                                    onChange={() => setViewSubjectsActive(!viewSubjectsActive)}
                                 />
                             }
                         ></List.Item.Meta>
@@ -69,18 +67,18 @@ export default function ListUsers(props) {
                 </div>
             </div>
 
-            {viewUsersActives ? (
-                <UsersActive
-                    usersActive={usersActive}
+            {viewSubjectsActive ? (
+                <SubjectsActive
+                    subjectsActive={subjectsActive}
                     setIsVisibleModal={setIsVisibleModal}
                     setModalTitle={setModalTitle}
                     setModalContent={setModalContent}
-                    setReloadUsers={setReloadUsers}
+                    setReloadSubjects={setReloadSubjects}
                 />
             ) : (
-                <UsersInactive
-                    usersInactive={usersInactive}
-                    setReloadUsers={setReloadUsers}
+                <SubjectsInactive
+                    subjectsInactive={subjectsInactive}
+                    setReloadSubjects={setReloadSubjects}
                 />
             )}
 
@@ -95,68 +93,57 @@ export default function ListUsers(props) {
     );
 }
 
-function UsersActive(props) {
+function SubjectsActive(props) {
     const {
-        usersActive,
+        subjectsActive,
         setIsVisibleModal,
         setModalTitle,
         setModalContent,
-        setReloadUsers,
+        setReloadSubjects,
     } = props;
 
-    const editUser = (user) => {
+    const editSubject = (subject) => {
         setIsVisibleModal(true);
         setModalTitle(
-            `Editar ${user.name_user ? user.name_user : "..."} ${user.lastname ? user.lastname : "..."}`
+            `Editar ${subject.departament ? subject.name_user : "..."}`
         );
         setModalContent(
-            <EditUserForm
-                user={user}
+            <EditSubjectForm
+                subject={subject}
                 setIsVisibleModal={setIsVisibleModal}
-                setReloadUsers={setReloadUsers}
+                setReloadSubjects={setReloadSubjects}
             />
         );
     };
 
     return (
         <List
-            className="users-active"
+            className="subjects-active"
             itemLayout="horizontal"
-            dataSource={usersActive}
-            renderItem={(user) => (
-                <UserActive
-                    user={user}
-                    editUser={editUser}
-                    setReloadUsers={setReloadUsers}
+            dataSource={subjectsActive}
+            renderItem={(subject) => (
+                <SubjectActive
+                    subject={subject}
+                    editSubject={editSubject}
+                    setReloadSubjects={setReloadSubjects}
                 />
             )}
         />
     );
 }
 
-function UserActive(props) {
-    const { user, editUser, setReloadUsers } = props;
-    const [avatar, setAvatar] = useState(null);
+function SubjectActive(props) {
+    const { subject, editSubject, setReloadSubjects } = props;
 
-    useEffect(() => {
-        if (user.avatar) {
-            getAvatar(user.avatar).then((response) => {
-                setAvatar(response);
-            });
-        } else {
-            setAvatar(null);
-        }
-    }, [user]);
-
-    const desactivateUser = () => {
+    const desactiveSubject = () => {
         const accesToken = getAccesToken();
 
-        activateUser(accesToken, user._id, false)
+        activateSubject(accesToken, subject._id, false)
             .then((response) => {
                 notification["success"]({
                     message: response,
                 });
-                setReloadUsers(true);
+                setReloadSubjects(true);
             })
             .catch((err) => {
                 notification["error"]({
@@ -170,17 +157,17 @@ function UserActive(props) {
 
         confirm({
             title: "Eliminando usuario",
-            content: `¿Estas seguro que quieres eliminar a ${user.email}?`,
+            content: `¿Estas seguro que quieres eliminar a ${subject.email}?`,
             okText: "Eliminar",
             okType: "danger",
             cancelText: "Cancelar",
             onOk() {
-                deleteUser(accesToken, user._id)
+                deleteSubject(accesToken, subject._id)
                     .then((response) => {
                         notification["success"]({
                             message: response,
                         });
-                        setReloadUsers(true);
+                        setReloadSubjects(true);
                     })
                     .catch((err) => {
                         notification["error"]({
@@ -194,10 +181,10 @@ function UserActive(props) {
     return (
         <List.Item
             actions={[
-                <Button type="primary" onClick={() => editUser(user)}>
+                <Button type="primary" onClick={() => editSubject(subject)}>
                     <EditOutlined />
                 </Button>,
-                <Button type="danger" onClick={desactivateUser}>
+                <Button type="danger" onClick={desactiveSubject}>
                     <UserSwitchOutlined />
                 </Button>,
                 <Button type="danger" onClick={showDeleteConfirm}>
@@ -206,55 +193,42 @@ function UserActive(props) {
             ]}
         >
             <List.Item.Meta
-                avatar={<Avatar src={avatar ? avatar : NoAvatar} />}
                 title={`
-                ${user.name_user ? user.name_user : "..."} 
-                ${user.lastname ? user.lastname : "..."}
+                ${subject.academic_activity ? subject.academic_activity : "..."} 
             `}
-                description={user.email}
+                description={subject.activity_code}
             />
         </List.Item>
     );
 }
 
-function UsersInactive(props) {
-    const { usersInactive, setReloadUsers } = props;
+function SubjectsInactive(props) {
+    const { subjectsInactive, setReloadSubjects } = props;
 
     return (
         <List
             className="users-active"
             itemLayout="horizontal"
-            dataSource={usersInactive}
-            renderItem={(user) => (
-                <UserInactive user={user} setReloadUsers={setReloadUsers} />
+            dataSource={subjectsInactive}
+            renderItem={(subject) => (
+                <UserInactive subject={subject} setReloadSubjects={setReloadSubjects} />
             )}
         />
     );
 }
 
 function UserInactive(props) {
-    const { user, setReloadUsers } = props;
-    const [avatar, setAvatar] = useState(null);
+    const { subject, setReloadSubjects } = props;
 
-    useEffect(() => {
-        if (user.avatar) {
-            getAvatar(user.avatar).then((response) => {
-                setAvatar(response);
-            });
-        } else {
-            setAvatar(null);
-        }
-    }, [user]);
-
-    const activateUserF = () => {
+    const activateSubjectF = () => {
         const accesToken = getAccesToken();
 
-        activateUser(accesToken, user._id, true)
+        activateSubject(accesToken, subject._id, true)
             .then((response) => {
                 notification["success"]({
                     message: response,
                 });
-                setReloadUsers(true);
+                setReloadSubjects(true);
             })
             .catch((err) => {
                 notification["error"]({
@@ -267,20 +241,20 @@ function UserInactive(props) {
         const accesToken = getAccesToken();
 
         confirm({
-            title: "Eliminando usuario",
-            content: `¿Estas seguro que quieres eliminar a ${user.email}?`,
+            title: "Eliminando asignatura",
+            content: `¿Estas seguro que quieres eliminar a ${subject.academic_activity}?`,
             okText: "Eliminar",
             okType: "danger",
             cancelText: "Cancelar",
             onOk() {
-                deleteUser(accesToken, user._id)
+                deleteSubject(accesToken, subject._id)
                     .then((response) => {
-                        console.log(user._id);
+                        console.log(subject._id);
                         notification["success"]({
                             message: response,
                         });
-                        console.log(user._id);
-                        setReloadUsers(true);
+                        console.log(subject._id);
+                        setReloadSubjects(true);
                     })
                     .catch((err) => {
                         notification["error"]({
@@ -293,7 +267,7 @@ function UserInactive(props) {
     return (
         <List.Item
             actions={[
-                <Button type="primary" onClick={activateUserF}>
+                <Button type="primary" onClick={activateSubjectF}>
                     <UserSwitchOutlined />
                 </Button>,
                 <Button type="danger" onClick={showDeleteConfirm}>
@@ -302,12 +276,10 @@ function UserInactive(props) {
             ]}
         >
             <List.Item.Meta
-                avatar={<Avatar src={avatar ? avatar : NoAvatar} />}
                 title={`
-                  ${user.name_user ? user.name_user : "..."} 
-                  ${user.lastname ? user.lastname : "..."}
+                  ${subject.academic_activity ? subject.academic_activity : "..."} 
               `}
-                description={user.email}
+                description={subject.activity_code}
             />
         </List.Item>
     );

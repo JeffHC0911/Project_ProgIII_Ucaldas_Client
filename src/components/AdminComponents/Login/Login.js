@@ -36,7 +36,6 @@ export default function Login() {
         notification.success({
           message: result.message
         })
-
         window.location.href="/admin"
       }
       console.log(result)

@@ -1,8 +1,7 @@
 import React from "react";
-import Card from "./Card"
-import "./Admin.scss"
+import Card from "../Admin/Card"
 
-export default function Admin() {
+export default function Editor() {
     const imageOne = "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
 
     const contentCards = [

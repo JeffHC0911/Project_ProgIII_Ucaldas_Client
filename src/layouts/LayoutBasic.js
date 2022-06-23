@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Layout } from "antd";
-import MenuTop from "../components/AdminComponents/MenuTop";
+import MenuTop from "../components/UserComponents/MenuTopUser";
 import MenuSider from "../components/AdminComponents/MenuSider";
 import {GithubOutlined  } from "@ant-design/icons";
 import { Button } from "antd";
@@ -16,15 +16,11 @@ export default function LayoutBasic(props) {
   
     return (
       <Layout>
-        <MenuSider menuCollapsed={menuCollapsed} />
         <Layout
           className="layout-admin"
-          style={{ marginLeft: menuCollapsed ? "80px" : "200px" }}
         >
           <Header className="layout-admin__header">
             <MenuTop
-              menuCollapsed={menuCollapsed}
-              setMenuCollapsed={setMenuCollapsed}
             />
           </Header>
           <Content className="layout-admin__content">{children}</Content>
